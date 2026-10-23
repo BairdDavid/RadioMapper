@@ -388,7 +388,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (session !== liveSessionId) return;
             liveActive = false;
             setLiveRunning(false);
-            setLiveStatus('Could not reach the receiver. Open this page with live_server.py.');
+            setLiveStatus('Could not reach the receiver.');
         });
     }
 
@@ -409,11 +409,23 @@ document.addEventListener('DOMContentLoaded', function () {
         socket.on('judoapi', handleLiveMessage);
     }
 
+    function liveTokenUrls(host) {
+        const tail = '/apps/device/api/v1/token';
+        const urls = ['https://' + host + tail];
+        urls.push(new URL('mp/' + host + tail, new URL('./', document.baseURI)).href);
+        ['http://127.0.0.1:18765', 'http://localhost:18765'].forEach((origin) => {
+            urls.push(origin + '/mp/' + host + tail);
+        });
+        return urls.filter((url, index) => urls.indexOf(url) === index);
+    }
+
     function requestGuestAuth(host) {
-        const direct = 'https://' + host + '/apps/device/api/v1/token';
-        const proxied = location.origin + '/mp/' + host + '/apps/device/api/v1/token';
-        return postGuestAuth(direct).then((token) => ({ token: token, proxied: false }))
-            .catch(() => postGuestAuth(proxied).then((token) => ({ token: token, proxied: true })));
+        const urls = liveTokenUrls(host);
+        let attempt = Promise.reject();
+        urls.forEach((url) => {
+            attempt = attempt.catch(() => postGuestAuth(url));
+        });
+        return attempt.then((token) => ({ token: token }));
     }
 
     function postGuestAuth(url) {
