@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio Coverage Viewer</title>
+
+    <link rel="icon" type="image/png" href="img/Logo_Trimble.png">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css" />
+    
+    <link rel="stylesheet" href="style.css?v=1.3">
+</head>
+<body>
+
+    <div class="header">
+        <img src="trimble-white.png" alt="Trimble" class="header-logo">
+        <h1>Radio Coverage Viewer</h1>
+        <a href="help.html" class="header-help-btn" title="Help">i</a>
+    </div>
+
+    <div class="main-container">
+        <div id="map"></div>
+
+        <div class="sidebar">
+            <div class="sidebar-content">
+                
+                <h2>Files</h2>
+                <input type="file" id="csv-upload" accept=".csv" style="display: none;">
+                <button id="upload-btn">Upload</button>
+                <button id="clear-btn">Clear</button>
+
+                <div class="live-control">
+                    <label for="live-host">Receiver</label>
+                    <input type="text" id="live-host" value="mp1087.com" spellcheck="false" autocomplete="off">
+                    <button id="live-start-btn">Start Live</button>
+                    <button id="live-stop-btn" disabled>Stop Live</button>
+                    <p id="live-status">Stopped</p>
+                </div>
+                
+                <div id="info-section" class="hidden">
+                    <h2>Info</h2>
+                    <div id="info-container">
+                        </div>
+                </div>
+
+                <div id="filter-section" class="hidden">
+                    <h2>Filters</h2>
+                    <div id="filters-container">
+                        <div class="filter-control" id="rssi-limits-container">
+                            <label>RSSI Limit (Good/Weak)</label>
+                            <div id="rssi-limits-slider"></div>
+                            <div class="slider-labels">
+                                <span id="rssi-limits-best-label"></span>
+                                <span id="rssi-limits-worst-label"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-control" id="rssi-range-container">
+                            <label>RSSI Range (Min/Max)</label>
+                            <div id="rssi-range-slider"></div>
+                            <div class="slider-labels">
+                                <span id="rssi-range-best-label"></span>
+                                <span id="rssi-range-worst-label"></span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <button id="apply-filter-btn">Apply Filters</button>
+                    <button id="reset-filter-btn">Reset Filter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="https://www.trimble.com/en/our-commitment/responsible-business/data-privacy-and-security/data-privacy-center">Privacy</a>
+        <p>&nbsp;|&nbsp;</p>
+        <a href="https://www.trimble.com/en/legal/terms-and-conditions/terms-of-use">Terms of Use</a>
+        <p>&copy; 2026, Trimble Inc. All rights reserved.</p>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
+    
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+
+    <script src="script.js?v=1.7"></script>
+</body>
+</html>

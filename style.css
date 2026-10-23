@@ -1,0 +1,268 @@
+/* Basic reset for body and html to take up the full height */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- HEADER STYLES --- */
+.header {
+    background-color: #00437A;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.header-logo {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    /* The file is square with transparent padding. This height makes the wordmark 24px tall. */
+    height: 112px;
+    width: auto;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 1.5em;
+    flex-grow: 1;
+}
+
+.header-help-btn {
+    position: absolute;
+    right: 20px;
+    color: #fff;
+    background-color: #00437A;
+    border: 1px solid #fff;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 28px;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none;
+    font-family: 'Times New Roman', Times, serif;
+    cursor: pointer;
+}
+
+/* --- MAIN LAYOUT --- */
+.main-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+#map {
+    flex: 1;
+    height: 100%;
+}
+
+/* --- SIDEBAR STYLES --- */
+.sidebar {
+    width: 240px;
+    min-width: 200px;
+    background-color: #F2F1F7;
+    padding: 15px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.sidebar-content h2 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+.sidebar button {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    background-color: #00437A;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.sidebar button:hover {
+    background-color: #00305A;
+}
+
+.sidebar button:disabled,
+.sidebar button:disabled:hover {
+    background-color: #9bb0c2;
+    cursor: default;
+}
+
+.live-control {
+    margin-top: 6px;
+}
+
+.live-control label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.live-control input {
+    width: 100%;
+    padding: 6px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+#live-status {
+    font-size: 0.85em;
+    line-height: 1.4;
+    margin: 0 0 10px;
+    word-wrap: break-word;
+}
+
+.hidden {
+    display: none;
+}
+
+/* --- INFO & FILTER SECTION STYLES --- */
+#info-container,
+#filters-container {
+    background-color: white;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+#info-container p {
+    font-size: 0.9em;
+    margin: 5px 0;
+    word-wrap: break-word;
+}
+
+#filter-section button {
+    margin-top: 5px;
+}
+
+.filter-control {
+    margin-bottom: 10px;
+}
+
+.filter-control label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.filter-control input,
+.filter-control select {
+    width: 100%;
+    padding: 6px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 0.9em;
+}
+
+/* --- SLIDER STYLES --- */
+#rssi-range-slider, #rssi-limits-slider {
+    margin-top: 10px;
+}
+
+.slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 8px;
+}
+
+.noUi-target {
+    background: #ddd;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-shadow: none;
+    height: 6px;
+}
+
+.noUi-connect {
+    background: #00437A;
+}
+
+/* Use more specific selectors to override default library styles */
+#rssi-range-slider .noUi-handle,
+#rssi-limits-slider .noUi-handle {
+    height: 10px;
+    width: 10px;
+    top: -3px;
+    right: -5px;
+    border-radius: 50%;
+    border: 1px solid #999;
+    background: #fff;
+    box-shadow: none;
+    cursor: grab;
+}
+
+/* Ensure default handle pseudo-elements are hidden */
+#rssi-range-slider .noUi-handle::after,
+#rssi-range-slider .noUi-handle::before,
+#rssi-limits-slider .noUi-handle::after,
+#rssi-limits-slider .noUi-handle::before {
+    display: none;
+}
+
+/* --- FOOTER STYLES --- */
+.footer {
+    background-color: #00437A;
+    color: white;
+    padding: 5px 20px;
+    text-align: center;
+    margin-top: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.85em;
+    flex-shrink: 0;
+}
+
+.footer p, .footer a {
+    margin: 0 5px;
+    color: white;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* --- HELP PAGE STYLES --- */
+.help-container {
+    padding: 20px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: #fff;
+    flex-grow: 1;
+}
+.help-container h2 { color: #00437A; border-bottom: 2px solid #F2F1F7; padding-bottom: 5px; margin-top: 30px; }
+.help-container p, .help-container li { line-height: 1.6; }
+.help-container ul { padding-left: 20px; }
+.help-container hr { border: 0; height: 1px; background-color: #ddd; margin: 30px 0; }
+
+.help-page .main-container {
+    overflow-y: auto;
+}

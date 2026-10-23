@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help - Radio Coverage Viewer</title>
+    <link rel="icon" type="image/png" href="img/Logo_Trimble.png">
+    <link rel="stylesheet" href="style.css?v=1.3">
+</head>
+<body class="help-page">
+
+    <div class="header">
+        <img src="trimble-white.png" alt="Trimble" class="header-logo">
+        <h1>Help & Documentation</h1>
+        <a href="index.html" class="header-help-btn" title="Back to Map">✖</a>
+    </div>
+
+    <div class="main-container">
+        <div class="help-container">
+            <h2>About the Radio Coverage Viewer</h2>
+            <p>This tool is designed to visualize radio signal strength (RSSI) data from a CSV file on an interactive map. It allows you to see the geographic coverage and quality of a radio network based on collected data points.</p>
+
+            <hr>
+
+            <h2>CSV File Format Guide</h2>
+            <p>For the application to work correctly, your CSV file must follow a specific structure composed of three parts: a file header, a column header, and the data rows.</p>
+            
+            <h3>1. File Header (Lines beginning with #)</h3>
+            <p>This section provides metadata. The application looks for the following optional values:</p>
+            <ul>
+                <li><code># Model: [value]</code> - Displayed in the "Info" section. Shows "unknown" if not present.</li>
+                <li><code># Receiver ID: [value]</code> - Displayed in the "Info" section. Shows "unknown" if not present.</li>
+                <li><code># Description: [value]</code> - Displayed in the "Info" section. Shows "unknown" if not present.</li>
+                <li><code># Max good RSSI: [value]</code> - Sets the "Good" signal threshold for coloring the map points. Defaults to -90 if not present.</li>
+                <li><code># Max okay RSSI: [value]</code> - Sets the "Weak" signal threshold for coloring the map points. Defaults to -114 if not present.</li>
+            </ul>
+            <p>Any other header lines (e.g., for PDOP, HorErr) are ignored.</p>
+
+            <h3>2. Column Header Line</h3>
+            <p>This single line defines the data in the columns that follow. The application requires the following column names:</p>
+            <ul>
+                <li><code>Date</code></li>
+                <li><code>Time</code></li>
+                <li><code>Lat</code> (Latitude)</li>
+                <li><code>Lon</code> (Longitude)</li>
+                <li><code>RSSI</code></li>
+            </ul>
+            <p>Any other columns in your file will be ignored.</p>
+
+            <h3>3. Data Rows</h3>
+            <p>These rows contain the measurement data corresponding to the column header.</p>
+            <ul>
+                <li><strong>Time Format:</strong> The <code>Date</code> and <code>Time</code> are read directly from the file. No timezone adjustments are made, so the data should ideally be in **UTC**. The expected date format is <code>MM/DD/YYYY</code>.</li>
+                <li><strong>Coordinate (Lat/Lon) Format:</strong> The advised format is **Decimal Degrees** (e.g., <code>39.895367</code>). The application will also automatically convert from other common GPS formats like Degrees Minutes Seconds (e.g., <code>39.53.4332630</code>).</li>
+            </ul>
+
+            <hr>
+
+            <h2>Interpreting the Map</h2>
+            <p>The map displays your data as a series of colored dots. The color of each dot corresponds to its RSSI value, providing a quick visual reference for signal quality.</p>
+            <ul>
+                <li><strong style="color: #00FF00;">Green:</strong> Strong signal (at or above the "Good" limit).</li>
+                <li><strong style="color: #FFA500;">Yellow/Orange:</strong> Moderate signal.</li>
+                <li><strong style="color: #FF0000;">Red:</strong> Weak signal (at or below the "Weak" limit).</li>
+            </ul>
+            <p><strong>Click on any individual dot on the map to open a popup with its exact Date, Time, and RSSI information.</strong> You can switch between a street map and satellite imagery using the layer control in the top-right corner of the map.</p>
+
+
+            <hr>
+
+            <h2>Using the Filters</h2>
+            <p>The "Filters" section allows you to explore your dataset.</p>
+            <ul>
+                <li><strong>Time Filter:</strong> Filters the data points to a specific time range. The times you select are interpreted as UTC.</li>
+                <li><strong>RSSI Limit (Good/Weak) Slider:</strong> This slider controls the **color grading** of the dots on the map. Its initial position is set by the <code># Max good RSSI</code> and <code># Max okay RSSI</code> values from your file's header (or defaults to -90 and -114 if they are not provided).</li>
+                <li><strong>RSSI Range (Min/Max) Slider:</strong> This slider **hides data points** from the map. Its initial range is set to the best and worst RSSI values found in the entire dataset. Adjusting the handles will cause points with an RSSI outside the selected range to disappear.</li>
+            </ul>
+            <p>Click <strong>Apply Filters</strong> to update the map after making changes. Click <strong>Reset Filter</strong> to return all filters to their original state.</p>
+
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="https://www.trimble.com/en/our-commitment/responsible-business/data-privacy-and-security/data-privacy-center">Privacy</a>
+        <p>&nbsp;|&nbsp;</p>
+        <a href="https://www.trimble.com/en/legal/terms-and-conditions/terms-of-use">Terms of Use</a>
+        <p>&copy; 2026, Trimble Inc. All rights reserved.</p>
+    </div>
+
+</body>
+</html>
