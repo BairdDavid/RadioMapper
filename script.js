@@ -392,16 +392,30 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function openLiveSocket(host, auth) {
-        const socket = io('https://' + host + '/apps/device/api/v1/ws', {
-            path: '/apps/device/api/v1/ws',
+    function openLiveSocket(host, auth, viaProxy) {
+        const origin = viaProxy ? auth.proxy.origin : 'https://' + host;
+        const path = (viaProxy ? auth.proxy.pathname.replace(/\/token$/, '') : '/apps/device/api/v1') + '/ws';
+        const socket = io(origin + '/apps/device/api/v1/ws', {
+            path: path,
             transports: ['websocket'],
             auth: { token: auth.token }
         });
+        let connected = false;
         liveSocket = socket;
-        socket.on('connect', subscribeLiveTopics);
+        socket.on('connect', () => {
+            connected = true;
+            subscribeLiveTopics();
+        });
         socket.on('connect_error', () => {
-            if (liveActive) setLiveStatus('Connection failed. Retrying…');
+            if (!liveActive) return;
+            if (!connected && !viaProxy && auth.proxy) {
+                // Receivers with their own certificate reject the browser; go through the local helper.
+                socket.removeAllListeners();
+                socket.disconnect();
+                openLiveSocket(host, auth, true);
+                return;
+            }
+            setLiveStatus('Connection failed. Retrying…');
         });
         socket.on('disconnect', () => {
             if (liveActive) setLiveStatus('Reconnecting…');
@@ -423,9 +437,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const urls = liveTokenUrls(host);
         let attempt = Promise.reject();
         urls.forEach((url) => {
-            attempt = attempt.catch(() => postGuestAuth(url));
+            attempt = attempt.catch(() => postGuestAuth(url).then((token) => ({
+                token: token,
+                proxy: url.includes('/mp/' + host + '/') ? new URL(url) : null
+            })));
         });
-        return attempt.then((token) => ({ token: token }));
+        return attempt;
     }
 
     function postGuestAuth(url) {
@@ -434,7 +451,7 @@ document.addEventListener('DOMContentLoaded', function () {
         body.append('username', 'guest');
         body.append('password', 'guest');
         body.append('client_id', 'judoid');
-        return fetch(url, { method: 'POST', body }).then((response) => {
+        return fetch(url, { method: 'POST', body, signal: AbortSignal.timeout(15000) }).then((response) => {
             if (!response.ok) throw new Error('sign-in failed');
             return response.json();
         }).then((data) => {
@@ -490,8 +507,8 @@ document.addEventListener('DOMContentLoaded', function () {
             setLiveStatus('Connecting…');
             return;
         }
-        const rssi = latestUhf ? Number(latestUhf.rssiPacket) : NaN;
-        const noise = latestUhf ? Number(latestUhf.rssiNoise) : NaN;
+        const rssi = latestUhf ? toDbm(latestUhf.rssiPacket) : NaN;
+        const noise = latestUhf ? toDbm(latestUhf.rssiNoise) : NaN;
         const parts = [
             'Connected',
             Number.isFinite(rssi) ? `${rssi} dBm` : 'waiting for UHF',
@@ -528,7 +545,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function handleUhf(payload) {
-        const rssi = Number(payload.rssiPacket);
+        const rssi = toDbm(payload.rssiPacket);
         if (!Number.isFinite(rssi)) return;
         const packetCount = payload.packetCount;
         if (packetCount != null && seenPackets.has(packetCount)) return;
@@ -548,7 +565,7 @@ document.addEventListener('DOMContentLoaded', function () {
             timestamp: timestamp,
             dateStr: toUtcMinuteInput(timestamp).slice(0, 10),
             timeStr: when.toISOString().slice(11, 19),
-            noise: Number(payload.rssiNoise),
+            noise: toDbm(payload.rssiNoise),
             packetCount: packetCount
         });
 
@@ -592,6 +609,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const end = document.getElementById('end-time');
         if (start && minute < start.value) start.value = minute;
         if (end && minute > end.value) end.value = minute;
+    }
+
+    function toDbm(value) {
+        return value == null || value === '' ? NaN : Number(value);
     }
 
     function normalizeHost(raw) {
